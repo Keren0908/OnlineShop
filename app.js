@@ -2,6 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const errorController = require('./controllers/error');
 
@@ -21,4 +22,15 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(3000);
+
+mongoose.connect(
+    'mongodb+srv://keren:EFB2txAN8gUmOTxq@cluster0-89ged.mongodb.net/test?retryWrites=true',
+    { useNewUrlParser: true }
+    ).then(result => {
+        console.log("connect!");
+        app.listen(3000);
+    })
+    .catch(err => {
+    console.log(err);
+
+});
