@@ -24,7 +24,7 @@ app.use(errorController.get404);
 
 
 mongoose.connect(
-    'mongodb+srv://keren:EFB2txAN8gUmOTxq@cluster0-89ged.mongodb.net/test?retryWrites=true',
+    'mongodb+srv://keren:EFB2txAN8gUmOTxq@cluster0-89ged.mongodb.net/onlineShop?retryWrites=true',
     { useNewUrlParser: true }
     ).then(result => {
         console.log("connect!");
