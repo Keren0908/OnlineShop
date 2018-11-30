@@ -1,36 +1,61 @@
-const path = require('path');
+const path = require("path");
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
-const errorController = require('./controllers/error');
+const errorController = require("./controllers/error");
+
+const User = require("./models/user");
 
 const app = express();
 
-app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.set("view engine", "ejs");
+app.set("views", "views");
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/admin', adminRoutes);
+app.use((req,res,next) => {
+    User.findById('5c01bbccd55257248417b46a')
+    .then(user => {
+        req.user = user;
+        next();
+    })
+    .catch(err => {
+        console.log(err);
+    })
+})
+
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-
-mongoose.connect(
-    'mongodb+srv://keren:EFB2txAN8gUmOTxq@cluster0-89ged.mongodb.net/onlineShop?retryWrites=true',
+mongoose
+  .connect(
+    "mongodb+srv://keren:EFB2txAN8gUmOTxq@cluster0-89ged.mongodb.net/onlineShop?retryWrites=true",
     { useNewUrlParser: true }
-    ).then(result => {
-        console.log("connect!");
-        app.listen(3000);
-    })
-    .catch(err => {
+  )
+  .then(result => {
+    User.findOne().then(user => {
+      if (!user) {
+        const user = new User({
+          name: "Keren",
+          email: "hkr.he@outlook.com",
+          cart: {
+            item: []
+          }
+        });
+        user.save();
+      }
+    });
+    console.log("connect!");
+    app.listen(3000);
+  })
+  .catch(err => {
     console.log(err);
-
-});
+  });
